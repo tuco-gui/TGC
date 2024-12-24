@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação - Perguntas para Fazer na Entrevista</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .question, .user-info {
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Avaliação - Perguntas para Fazer na Entrevista</h1>
+    <form id="quiz-form">
+        <!-- Colher nome do usuário -->
+        <div class="user-info">
+            <label for="userName"><strong>Nome do Usuário:</strong></label><br>
+            <input type="text" id="userName" name="userName" placeholder="Digite seu nome" required>
+        </div>
+
+        <!-- Questões -->
+        <div class="question">
+            <p><strong>1.</strong> Qual é o objetivo principal das perguntas em uma entrevista de vendas? (Fácil)</p>
+            <input type="radio" name="q1" value="A" required> Avaliar conhecimentos técnicos específicos.<br>
+            <input type="radio" name="q1" value="B"> Compreender competências, motivações e alinhamento cultural.<br>
+            <input type="radio" name="q1" value="C"> Focar em experiências passadas apenas.<br>
+            <input type="radio" name="q1" value="D"> Fornecer informações sobre a empresa.
+        </div>
+
+        <div class="question">
+            <p><strong>2.</strong> Qual é uma pergunta eficaz para entender as motivações do candidato? (Fácil)</p>
+            <input type="radio" name="q2" value="A" required> "Por que você quer sair do seu emprego atual?"<br>
+            <input type="radio" name="q2" value="B"> "O que te motiva na área comercial?"<br>
+            <input type="radio" name="q2" value="C"> "Você conhece a nossa empresa?"<br>
+            <input type="radio" name="q2" value="D"> "Qual é o seu objetivo de longo prazo?"
+        </div>
+
+        <div class="question">
+            <p><strong>3.</strong> Qual pergunta ajuda a avaliar as habilidades do candidato em lidar com objeções? (Média)</p>
+            <input type="radio" name="q3" value="A" required> "Conte uma situação em que você superou uma objeção de um cliente."<br>
+            <input type="radio" name="q3" value="B"> "Você gosta de trabalhar sob pressão?"<br>
+            <input type="radio" name="q3" value="C"> "Como você lida com metas de vendas altas?"<br>
+            <input type="radio" name="q3" value="D"> "Por que devemos te contratar?"
+        </div>
+
+        <div class="question">
+            <p><strong>4.</strong> Como identificar se o candidato se alinha com os valores da empresa? (Média)</p>
+            <input type="radio" name="q4" value="A" required> Pedindo para o candidato descrever seu estilo de trabalho.<br>
+            <input type="radio" name="q4" value="B"> Solicitando exemplos de situações alinhadas aos valores da empresa.<br>
+            <input type="radio" name="q4" value="C"> Avaliando exclusivamente experiências passadas.<br>
+            <input type="radio" name="q4" value="D"> Perguntando sobre objetivos de curto prazo.
+        </div>
+
+        <div class="question">
+            <p><strong>5.</strong> Qual é um erro comum ao fazer perguntas em entrevistas? (Difícil)</p>
+            <input type="radio" name="q5" value="A" required> Realizar perguntas genéricas e sem propósito.<br>
+            <input type="radio" name="q5" value="B"> Focar em competências essenciais para o cargo.<br>
+            <input type="radio" name="q5" value="C"> Personalizar perguntas com base no candidato.<br>
+            <input type="radio" name="q5" value="D"> Observar respostas comportamentais.
+        </div>
+
+        <div class="question">
+            <p><strong>6.</strong> Por que é importante perguntar sobre experiências passadas de vendas? (Difícil)</p>
+            <input type="radio" name="q6" value="A" required> Para entender como o candidato reage a situações desafiadoras.<br>
+            <input type="radio" name="q6" value="B"> Para avaliar apenas os resultados financeiros.<br>
+            <input type="radio" name="q6" value="C"> Para medir alinhamento cultural.<br>
+            <input type="radio" name="q6" value="D"> Para identificar o potencial futuro do candidato.
+        </div>
+
+        <div class="question">
+            <p><strong>7.</strong> Qual é o impacto de boas perguntas em entrevistas? (Superdifícil)</p>
+            <input type="radio" name="q7" value="A" required> Facilita a identificação do melhor candidato para a vaga.<br>
+            <input type="radio" name="q7" value="B"> Reduz o tempo necessário para a entrevista.<br>
+            <input type="radio" name="q7" value="C"> Garante uma contratação baseada apenas em resultados passados.<br>
+            <input type="radio" name="q7" value="D"> Centraliza a decisão no recrutador.
+        </div>
+
+        <button type="button" class="btn" onclick="calculateScore()">Enviar Respostas</button>
+        <button type="button" class="btn" onclick="responderNovamente()">Responder Novamente</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        function calculateScore() {
+            const answers = {
+                q1: 'B',
+                q2: 'B',
+                q3: 'A',
+                q4: 'B',
+                q5: 'A',
+                q6: 'A',
+                q7: 'A'
+            };
+
+            let score = 0;
+            let total = Object.keys(answers).length;
+
+            Object.keys(answers).forEach(q => {
+                const userAnswer = document.querySelector(`input[name="${q}"]:checked`);
+                if (userAnswer && userAnswer.value === answers[q]) {
+                    score++;
+                }
+            });
+
+            const userName = document.getElementById('userName').value;
+            const date = new Date().toLocaleString();
+            document.getElementById('result').innerText = `${userName}, você acertou ${score} de ${total} questões.`;
+
+            saveResult(userName, date, score, total);
+        }
+
+        function saveResult(userName, date, score, total) {
+            const resultData = JSON.parse(localStorage.getItem('results_perguntas_entrevista')) || [];
+            resultData.push({ userName, date, score, total });
+            localStorage.setItem('results_perguntas_entrevista', JSON.stringify(resultData));
+            alert('Resultado salvo com sucesso!');
+        }
+
+        function responderNovamente() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

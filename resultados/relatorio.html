@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados do Treinamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #000;
+        }
+        .result-item {
+            margin: 10px 0;
+        }
+        .chart-container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        .summary {
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Resultados do Treinamento</h1>
+    <div id="user-info">
+        <p><strong>Nome do Usuário:</strong> <span id="user-name">Usuário</span></p>
+        <p><strong>Data:</strong> <span id="current-date"></span></p>
+    </div>
+    <div id="results">
+        <h2>Desempenho por Tema</h2>
+        <ul id="result-list"></ul>
+        <p class="summary"><strong>Média Geral:</strong> <span id="average-score"></span></p>
+    </div>
+    <div class="chart-container">
+        <canvas id="barChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="pieChart"></canvas>
+    </div>
+
+    <script>
+        // Simulando resultados das avaliações
+        const results = [
+            { theme: "Estilos de Liderança", score: 8 },
+            { theme: "Liderança Situacional", score: 9 },
+            { theme: "DISC para Líderes", score: 7 },
+            { theme: "Gestão de Combinados", score: 6 },
+            { theme: "Construindo uma Cultura de Vendas", score: 10 },
+            { theme: "Quando Demitir um Vendedor", score: 5 },
+            { theme: "Tipos de Remuneração", score: 9 },
+            { theme: "Perguntas para Fazer na Entrevista", score: 8 },
+            { theme: "Ferramentas para Entrevistar Vendedores", score: 6 },
+            { theme: "Onboarding de Vendedores", score: 7 },
+            { theme: "Treinamento de Vendas", score: 8 },
+            { theme: "Coaching de Vendas", score: 7 },
+            { theme: "Construindo um Processo de Vendas", score: 9 },
+            { theme: "Gerenciando o Pipeline de Vendas", score: 8 },
+            { theme: "Liderando de Acordo com a Meta", score: 7 },
+            { theme: "Indicadores de Vendas", score: 6 },
+            { theme: "Planejamento Estratégico", score: 9 }
+        ];
+
+        // Calculando a média das notas
+        const scores = results.map(result => result.score);
+        const averageScore = (scores.reduce((sum, score) => sum + score, 0) / scores.length).toFixed(2);
+
+        // Inserindo dados do usuário
+        document.getElementById("user-name").innerText = "Nome Exemplo"; // Substituir pelo nome real do usuário
+        document.getElementById("current-date").innerText = new Date().toLocaleDateString();
+
+        // Exibindo resultados
+        const resultList = document.getElementById("result-list");
+        results.forEach(result => {
+            const li = document.createElement("li");
+            li.classList.add("result-item");
+            li.textContent = `${result.theme}: Nota ${result.score}`;
+            resultList.appendChild(li);
+        });
+
+        // Exibindo a média geral
+        document.getElementById("average-score").innerText = averageScore;
+
+        // Gráfico de Barras
+        const ctxBar = document.getElementById("barChart").getContext("2d");
+        new Chart(ctxBar, {
+            type: "bar",
+            data: {
+                labels: results.map(result => result.theme),
+                datasets: [{
+                    label: "Notas por Tema",
+                    data: scores,
+                    backgroundColor: "rgba(0, 0, 0, 0.7)",
+                    borderColor: "rgba(0, 0, 0, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    x: { title: { display: true, text: "Temas" } },
+                    y: {
+                        title: { display: true, text: "Nota" },
+                        beginAtZero: true,
+                        max: 10
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Pizza
+        const ctxPie = document.getElementById("pieChart").getContext("2d");
+        new Chart(ctxPie, {
+            type: "pie",
+            data: {
+                labels: results.map(result => result.theme),
+                datasets: [{
+                    data: scores,
+                    backgroundColor: [
+                        "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF",
+                        "#FF9F40", "#D4E157", "#64B5F6", "#81C784", "#FF7043",
+                        "#8E24AA", "#7986CB", "#E57373", "#4FC3F7", "#FFD54F",
+                        "#AED581", "#BA68C8"
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: "right" }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

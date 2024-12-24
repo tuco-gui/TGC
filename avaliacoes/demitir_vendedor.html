@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação - Quando Demitir um Vendedor</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .question, .user-info {
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Avaliação - Quando Demitir um Vendedor</h1>
+    <form id="quiz-form">
+        <!-- Colher nome do usuário -->
+        <div class="user-info">
+            <label for="userName"><strong>Nome do Usuário:</strong></label><br>
+            <input type="text" id="userName" name="userName" placeholder="Digite seu nome" required>
+        </div>
+
+        <!-- Questões -->
+        <div class="question">
+            <p><strong>1.</strong> Qual é o primeiro passo ao considerar a demissão de um vendedor? (Fácil)</p>
+            <input type="radio" name="q1" value="A" required> Tomar uma decisão imediata e sem análise.<br>
+            <input type="radio" name="q1" value="B"> Avaliar resultados, alinhamento cultural e performance.<br>
+            <input type="radio" name="q1" value="C"> Realizar reuniões frequentes de feedback.<br>
+            <input type="radio" name="q1" value="D"> Ignorar problemas e manter o vendedor na equipe.
+        </div>
+
+        <div class="question">
+            <p><strong>2.</strong> O que deve ser considerado ao avaliar a performance de um vendedor? (Fácil)</p>
+            <input type="radio" name="q2" value="A" required> Apenas resultados financeiros.<br>
+            <input type="radio" name="q2" value="B"> Atividades diárias, qualidade de atendimento e metas.<br>
+            <input type="radio" name="q2" value="C"> Fatores externos ao trabalho.<br>
+            <input type="radio" name="q2" value="D"> Frequência de feedback recebido.
+        </div>
+
+        <div class="question">
+            <p><strong>3.</strong> Qual é um erro comum no processo de demissão? (Média)</p>
+            <input type="radio" name="q3" value="A" required> Falta de comunicação clara e empática.<br>
+            <input type="radio" name="q3" value="B"> Realizar análises profundas antes da decisão.<br>
+            <input type="radio" name="q3" value="C"> Documentar o desempenho do vendedor.<br>
+            <input type="radio" name="q3" value="D"> Alinhar expectativas antes do desligamento.
+        </div>
+
+        <div class="question">
+            <p><strong>4.</strong> Qual é o impacto de uma demissão mal conduzida? (Média)</p>
+            <input type="radio" name="q4" value="A" required> Diminuição do moral da equipe e desconfiança.<br>
+            <input type="radio" name="q4" value="B"> Aumento da produtividade.<br>
+            <input type="radio" name="q4" value="C"> Melhoria no clima organizacional.<br>
+            <input type="radio" name="q4" value="D"> Redução da rotatividade.
+        </div>
+
+        <div class="question">
+            <p><strong>5.</strong> Quando a demissão deve ser evitada? (Difícil)</p>
+            <input type="radio" name="q5" value="A" required> Quando o vendedor demonstra potencial de crescimento com treinamento.<br>
+            <input type="radio" name="q5" value="B"> Em casos de baixa produtividade sem justificativa.<br>
+            <input type="radio" name="q5" value="C"> Quando o alinhamento cultural é ausente.<br>
+            <input type="radio" name="q5" value="D"> Quando o vendedor não atende às metas repetidamente.
+        </div>
+
+        <div class="question">
+            <p><strong>6.</strong> Qual é o papel do feedback no processo de demissão? (Difícil)</p>
+            <input type="radio" name="q6" value="A" required> Evitar discussões difíceis e focar na decisão.<br>
+            <input type="radio" name="q6" value="B"> Garantir que o vendedor tenha chance de melhorar.<br>
+            <input type="radio" name="q6" value="C"> Minimizar a importância do desempenho.<br>
+            <input type="radio" name="q6" value="D"> Substituir o vendedor imediatamente.
+        </div>
+
+        <div class="question">
+            <p><strong>7.</strong> Como uma demissão bem conduzida impacta a organização? (Superdifícil)</p>
+            <input type="radio" name="q7" value="A" required> Promove confiança na liderança e melhora o clima organizacional.<br>
+            <input type="radio" name="q7" value="B"> Gera desconfiança na equipe.<br>
+            <input type="radio" name="q7" value="C"> Diminui a produtividade da equipe.<br>
+            <input type="radio" name="q7" value="D"> Aumenta a rotatividade de funcionários.
+        </div>
+
+        <button type="button" class="btn" onclick="calculateScore()">Enviar Respostas</button>
+        <button type="button" class="btn" onclick="responderNovamente()">Responder Novamente</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        function calculateScore() {
+            const answers = {
+                q1: 'B',
+                q2: 'B',
+                q3: 'A',
+                q4: 'A',
+                q5: 'A',
+                q6: 'B',
+                q7: 'A'
+            };
+
+            let score = 0;
+            let total = Object.keys(answers).length;
+
+            Object.keys(answers).forEach(q => {
+                const userAnswer = document.querySelector(`input[name="${q}"]:checked`);
+                if (userAnswer && userAnswer.value === answers[q]) {
+                    score++;
+                }
+            });
+
+            const userName = document.getElementById('userName').value;
+            const date = new Date().toLocaleString();
+            document.getElementById('result').innerText = `${userName}, você acertou ${score} de ${total} questões.`;
+
+            saveResult(userName, date, score, total);
+        }
+
+        function saveResult(userName, date, score, total) {
+            const resultData = JSON.parse(localStorage.getItem('results_demitir_vendedor')) || [];
+            resultData.push({ userName, date, score, total });
+            localStorage.setItem('results_demitir_vendedor', JSON.stringify(resultData));
+            alert('Resultado salvo com sucesso!');
+        }
+
+        function responderNovamente() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

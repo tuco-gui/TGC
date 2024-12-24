@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação - Gestão de Combinados</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .question, .user-info {
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Avaliação - Gestão de Combinados</h1>
+    <form id="quiz-form">
+        <!-- Colher nome do usuário -->
+        <div class="user-info">
+            <label for="userName"><strong>Nome do Usuário:</strong></label><br>
+            <input type="text" id="userName" name="userName" placeholder="Digite seu nome" required>
+        </div>
+
+        <!-- Questões -->
+        <div class="question">
+            <p><strong>1.</strong> O que caracteriza um combinado eficaz em uma equipe? (Fácil)</p>
+            <input type="radio" name="q1" value="A" required> Um acordo verbal sem registro formal.<br>
+            <input type="radio" name="q1" value="B"> Acordos claros, registrados e com prazos definidos.<br>
+            <input type="radio" name="q1" value="C"> Um alinhamento geral sem detalhes específicos.<br>
+            <input type="radio" name="q1" value="D"> Apenas compromissos individuais.
+        </div>
+
+        <div class="question">
+            <p><strong>2.</strong> Por que é importante revisar combinados regularmente? (Fácil)</p>
+            <input type="radio" name="q2" value="A" required> Para identificar e punir quem não cumpriu os acordos.<br>
+            <input type="radio" name="q2" value="B"> Para ajustar expectativas e acompanhar o progresso.<br>
+            <input type="radio" name="q2" value="C"> Para substituir os combinados por novas metas.<br>
+            <input type="radio" name="q2" value="D"> Revisões não são necessárias se os combinados forem claros.
+        </div>
+
+        <div class="question">
+            <p><strong>3.</strong> Qual é um dos principais erros ao estabelecer combinados? (Média)</p>
+            <input type="radio" name="q3" value="A" required> Não envolver todos os membros da equipe.<br>
+            <input type="radio" name="q3" value="B"> Registrar prazos e responsabilidades.<br>
+            <input type="radio" name="q3" value="C"> Revisar os combinados após mudanças no projeto.<br>
+            <input type="radio" name="q3" value="D"> Delegar funções específicas.
+        </div>
+
+        <div class="question">
+            <p><strong>4.</strong> Como garantir o cumprimento dos combinados? (Média)</p>
+            <input type="radio" name="q4" value="A" required> Confiar apenas na memória dos participantes.<br>
+            <input type="radio" name="q4" value="B"> Registrar os combinados e fazer acompanhamento regular.<br>
+            <input type="radio" name="q4" value="C"> Delegar a um único responsável o acompanhamento.<br>
+            <input type="radio" name="q4" value="D"> Evitar reuniões de acompanhamento para ganhar tempo.
+        </div>
+
+        <div class="question">
+            <p><strong>5.</strong> Qual é um benefício de uma gestão eficaz de combinados? (Difícil)</p>
+            <input type="radio" name="q5" value="A" required> Aumento de confiança e produtividade na equipe.<br>
+            <input type="radio" name="q5" value="B"> Redução de prazos para tarefas.<br>
+            <input type="radio" name="q5" value="C"> Diminuição da necessidade de alinhamentos futuros.<br>
+            <input type="radio" name="q5" value="D"> Delegação total das responsabilidades ao gestor.
+        </div>
+
+        <div class="question">
+            <p><strong>6.</strong> Qual é um indicador de que os combinados não estão funcionando? (Difícil)</p>
+            <input type="radio" name="q6" value="A" required> Aumento de retrabalho e conflitos entre a equipe.<br>
+            <input type="radio" name="q6" value="B"> Alta confiança e cumprimento de prazos.<br>
+            <input type="radio" name="q6" value="C"> Acompanhamento regular dos combinados.<br>
+            <input type="radio" name="q6" value="D"> Comunicação fluida entre os membros da equipe.
+        </div>
+
+        <div class="question">
+            <p><strong>7.</strong> Como a gestão de combinados impacta a cultura organizacional? (Superdifícil)</p>
+            <input type="radio" name="q7" value="A" required> Promovendo accountability e transparência.<br>
+            <input type="radio" name="q7" value="B"> Focando apenas em resultados de curto prazo.<br>
+            <input type="radio" name="q7" value="C"> Reduzindo a necessidade de comunicação.<br>
+            <input type="radio" name="q7" value="D"> Centralizando decisões na liderança.
+        </div>
+
+        <button type="button" class="btn" onclick="calculateScore()">Enviar Respostas</button>
+        <button type="button" class="btn" onclick="responderNovamente()">Responder Novamente</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        function calculateScore() {
+            const answers = {
+                q1: 'B',
+                q2: 'B',
+                q3: 'A',
+                q4: 'B',
+                q5: 'A',
+                q6: 'A',
+                q7: 'A'
+            };
+
+            let score = 0;
+            let total = Object.keys(answers).length;
+
+            Object.keys(answers).forEach(q => {
+                const userAnswer = document.querySelector(`input[name="${q}"]:checked`);
+                if (userAnswer && userAnswer.value === answers[q]) {
+                    score++;
+                }
+            });
+
+            const userName = document.getElementById('userName').value;
+            const date = new Date().toLocaleString();
+            document.getElementById('result').innerText = `${userName}, você acertou ${score} de ${total} questões.`;
+
+            saveResult(userName, date, score, total);
+        }
+
+        function saveResult(userName, date, score, total) {
+            const resultData = JSON.parse(localStorage.getItem('results_gestao_combinados')) || [];
+            resultData.push({ userName, date, score, total });
+            localStorage.setItem('results_gestao_combinados', JSON.stringify(resultData));
+            alert('Resultado salvo com sucesso!');
+        }
+
+        function responderNovamente() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

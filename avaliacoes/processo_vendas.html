@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação - Construindo um Processo de Vendas</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .question, .user-info {
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Avaliação - Construindo um Processo de Vendas</h1>
+    <form id="quiz-form">
+        <!-- Colher nome do usuário -->
+        <div class="user-info">
+            <label for="userName"><strong>Nome do Usuário:</strong></label><br>
+            <input type="text" id="userName" name="userName" placeholder="Digite seu nome" required>
+        </div>
+
+        <!-- Questões -->
+        <div class="question">
+            <p><strong>1.</strong> Qual é o primeiro passo para construir um processo de vendas eficaz? (Fácil)</p>
+            <input type="radio" name="q1" value="A" required> Definir metas claras e específicas.<br>
+            <input type="radio" name="q1" value="B"> Automatizar tarefas de vendas.<br>
+            <input type="radio" name="q1" value="C"> Contratar novos vendedores.<br>
+            <input type="radio" name="q1" value="D"> Focar em métricas financeiras exclusivamente.
+        </div>
+
+        <div class="question">
+            <p><strong>2.</strong> Qual elemento é essencial em um processo de vendas bem estruturado? (Fácil)</p>
+            <input type="radio" name="q2" value="A" required> Acompanhamento constante dos leads.<br>
+            <input type="radio" name="q2" value="B"> Delegação de tarefas sem supervisão.<br>
+            <input type="radio" name="q2" value="C"> Foco exclusivo em resultados de curto prazo.<br>
+            <input type="radio" name="q2" value="D"> Redução de reuniões com a equipe.
+        </div>
+
+        <div class="question">
+            <p><strong>3.</strong> Como a segmentação de clientes impacta o processo de vendas? (Média)</p>
+            <input type="radio" name="q3" value="A" required> Ajuda a personalizar abordagens e aumentar conversões.<br>
+            <input type="radio" name="q3" value="B"> Diminui a capacidade de atender mais clientes.<br>
+            <input type="radio" name="q3" value="C"> Centraliza o controle no gestor de vendas.<br>
+            <input type="radio" name="q3" value="D"> Elimina a necessidade de ferramentas digitais.
+        </div>
+
+        <div class="question">
+            <p><strong>4.</strong> Qual é o papel das métricas no processo de vendas? (Média)</p>
+            <input type="radio" name="q4" value="A" required> Monitorar desempenho e identificar pontos de melhoria.<br>
+            <input type="radio" name="q4" value="B"> Substituir feedbacks qualitativos.<br>
+            <input type="radio" name="q4" value="C"> Evitar mudanças no processo.<br>
+            <input type="radio" name="q4" value="D"> Focar apenas no volume de vendas.
+        </div>
+
+        <div class="question">
+            <p><strong>5.</strong> Qual é um erro comum ao construir um processo de vendas? (Difícil)</p>
+            <input type="radio" name="q5" value="A" required> Ignorar o alinhamento entre vendas e marketing.<br>
+            <input type="radio" name="q5" value="B"> Documentar cada etapa do processo.<br>
+            <input type="radio" name="q5" value="C"> Usar ferramentas de automação.<br>
+            <input type="radio" name="q5" value="D"> Realizar treinamentos regulares.
+        </div>
+
+        <div class="question">
+            <p><strong>6.</strong> Como a tecnologia pode melhorar o processo de vendas? (Difícil)</p>
+            <input type="radio" name="q6" value="A" required> Automatizando tarefas e integrando informações.<br>
+            <input type="radio" name="q6" value="B"> Substituindo a interação humana.<br>
+            <input type="radio" name="q6" value="C"> Centralizando todas as decisões no gestor.<br>
+            <input type="radio" name="q6" value="D"> Evitando o uso de relatórios.
+        </div>
+
+        <div class="question">
+            <p><strong>7.</strong> Qual é o impacto de um processo de vendas bem estruturado? (Superdifícil)</p>
+            <input type="radio" name="q7" value="A" required> Aumenta a eficiência e melhora a experiência do cliente.<br>
+            <input type="radio" name="q7" value="B"> Reduz a necessidade de treinamento contínuo.<br>
+            <input type="radio" name="q7" value="C"> Elimina a dependência de métricas.<br>
+            <input type="radio" name="q7" value="D"> Aumenta a rotatividade da equipe.
+        </div>
+
+        <button type="button" class="btn" onclick="calculateScore()">Enviar Respostas</button>
+        <button type="button" class="btn" onclick="responderNovamente()">Responder Novamente</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        function calculateScore() {
+            const answers = {
+                q1: 'A',
+                q2: 'A',
+                q3: 'A',
+                q4: 'A',
+                q5: 'A',
+                q6: 'A',
+                q7: 'A'
+            };
+
+            let score = 0;
+            let total = Object.keys(answers).length;
+
+            Object.keys(answers).forEach(q => {
+                const userAnswer = document.querySelector(`input[name="${q}"]:checked`);
+                if (userAnswer && userAnswer.value === answers[q]) {
+                    score++;
+                }
+            });
+
+            const userName = document.getElementById('userName').value;
+            const date = new Date().toLocaleString();
+            document.getElementById('result').innerText = `${userName}, você acertou ${score} de ${total} questões.`;
+
+            saveResult(userName, date, score, total);
+        }
+
+        function saveResult(userName, date, score, total) {
+            const resultData = JSON.parse(localStorage.getItem('results_processo_vendas')) || [];
+            resultData.push({ userName, date, score, total });
+            localStorage.setItem('results_processo_vendas', JSON.stringify(resultData));
+            alert('Resultado salvo com sucesso!');
+        }
+
+        function responderNovamente() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

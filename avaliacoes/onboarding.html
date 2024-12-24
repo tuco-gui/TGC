@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação - Onboarding de Vendedores</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .question, .user-info {
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Avaliação - Onboarding de Vendedores</h1>
+    <form id="quiz-form">
+        <!-- Colher nome do usuário -->
+        <div class="user-info">
+            <label for="userName"><strong>Nome do Usuário:</strong></label><br>
+            <input type="text" id="userName" name="userName" placeholder="Digite seu nome" required>
+        </div>
+
+        <!-- Questões -->
+        <div class="question">
+            <p><strong>1.</strong> Qual é o objetivo principal de um processo de onboarding? (Fácil)</p>
+            <input type="radio" name="q1" value="A" required> Introduzir os vendedores ao produto.<br>
+            <input type="radio" name="q1" value="B"> Integrar novos vendedores à cultura e às metas da empresa.<br>
+            <input type="radio" name="q1" value="C"> Focar exclusivamente em treinamento técnico.<br>
+            <input type="radio" name="q1" value="D"> Reduzir o tempo para atingir metas.
+        </div>
+
+        <div class="question">
+            <p><strong>2.</strong> Qual elemento é essencial em um programa de onboarding? (Fácil)</p>
+            <input type="radio" name="q2" value="A" required> Sessões de feedback regulares.<br>
+            <input type="radio" name="q2" value="B"> Explicação detalhada dos produtos.<br>
+            <input type="radio" name="q2" value="C"> Formação sobre hierarquias de urgência.<br>
+            <input type="radio" name="q2" value="D"> Um manual de vendas.
+        </div>
+
+        <div class="question">
+            <p><strong>3.</strong> Como o onboarding impacta a retenção de vendedores? (Média)</p>
+            <input type="radio" name="q3" value="A" required> Reduz a rotatividade ao criar um forte senso de pertencimento.<br>
+            <input type="radio" name="q3" value="B"> Garante cumprimento imediato de metas.<br>
+            <input type="radio" name="q3" value="C"> Substitui a necessidade de treinamentos futuros.<br>
+            <input type="radio" name="q3" value="D"> Centraliza a comunicação com os gestores.
+        </div>
+
+        <div class="question">
+            <p><strong>4.</strong> Qual é um erro comum no onboarding? (Média)</p>
+            <input type="radio" name="q4" value="A" required> Ignorar o feedback dos novos vendedores.<br>
+            <input type="radio" name="q4" value="B"> Estabelecer metas claras desde o início.<br>
+            <input type="radio" name="q4" value="C"> Realizar reuniões de progresso frequentes.<br>
+            <input type="radio" name="q4" value="D"> Treinar os vendedores em ferramentas digitais.
+        </div>
+
+        <div class="question">
+            <p><strong>5.</strong> Qual é o impacto de um onboarding estruturado na produtividade? (Difícil)</p>
+            <input type="radio" name="q5" value="A" required> Aumenta a produtividade ao reduzir o tempo de adaptação.<br>
+            <input type="radio" name="q5" value="B"> Diminui a necessidade de treinamentos contínuos.<br>
+            <input type="radio" name="q5" value="C"> Reduz a dependência do gestor.<br>
+            <input type="radio" name="q5" value="D"> Aumenta a rotatividade na equipe.
+        </div>
+
+        <div class="question">
+            <p><strong>6.</strong> Como o feedback melhora o processo de onboarding? (Difícil)</p>
+            <input type="radio" name="q6" value="A" required> Identifica falhas no programa e ajusta às necessidades do vendedor.<br>
+            <input type="radio" name="q6" value="B"> Centraliza decisões no gestor.<br>
+            <input type="radio" name="q6" value="C"> Evita ajustes ao programa inicial.<br>
+            <input type="radio" name="q6" value="D"> Foca apenas em resultados imediatos.
+        </div>
+
+        <div class="question">
+            <p><strong>7.</strong> Qual é o impacto de um onboarding bem-sucedido na cultura organizacional? (Superdifícil)</p>
+            <input type="radio" name="q7" value="A" required> Reforça valores culturais e alinhamento estratégico.<br>
+            <input type="radio" name="q7" value="B"> Elimina a necessidade de integração futura.<br>
+            <input type="radio" name="q7" value="C"> Substitui treinamentos técnicos.<br>
+            <input type="radio" name="q7" value="D"> Reduz o alinhamento organizacional.
+        </div>
+
+        <button type="button" class="btn" onclick="calculateScore()">Enviar Respostas</button>
+        <button type="button" class="btn" onclick="responderNovamente()">Responder Novamente</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        function calculateScore() {
+            const answers = {
+                q1: 'B',
+                q2: 'A',
+                q3: 'A',
+                q4: 'A',
+                q5: 'A',
+                q6: 'A',
+                q7: 'A'
+            };
+
+            let score = 0;
+            let total = Object.keys(answers).length;
+
+            Object.keys(answers).forEach(q => {
+                const userAnswer = document.querySelector(`input[name="${q}"]:checked`);
+                if (userAnswer && userAnswer.value === answers[q]) {
+                    score++;
+                }
+            });
+
+            const userName = document.getElementById('userName').value;
+            const date = new Date().toLocaleString();
+            document.getElementById('result').innerText = `${userName}, você acertou ${score} de ${total} questões.`;
+
+            saveResult(userName, date, score, total);
+        }
+
+        function saveResult(userName, date, score, total) {
+            const resultData = JSON.parse(localStorage.getItem('results_onboarding')) || [];
+            resultData.push({ userName, date, score, total });
+            localStorage.setItem('results_onboarding', JSON.stringify(resultData));
+            alert('Resultado salvo com sucesso!');
+        }
+
+        function responderNovamente() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

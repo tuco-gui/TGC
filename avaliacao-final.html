@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação Final</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #000;
+        }
+        .hidden {
+            display: none;
+        }
+        .btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Avaliação Final</h1>
+    <div id="quiz-container"></div>
+    <div id="buttons">
+        <button type="button" id="back-button" class="btn" onclick="previousQuestion()">Voltar</button>
+        <button type="button" id="quit-button" class="btn" onclick="quitQuiz()">Desistir</button>
+        <button type="button" id="next-button" class="btn" onclick="nextQuestion()">Próxima Pergunta</button>
+        <button type="button" id="finish-button" class="btn" onclick="calculateScore()">Finalizar</button>
+    </div>
+    <p id="result"></p>
+
+    <script>
+        const questions = [
+            { text: "Qual estilo de liderança é mais eficaz para liderados novos e inseguros? (Liderança Situacional)", correct: "A", options: ["Diretivo", "Delegador", "Apoiador", "Orientador"] },
+            { text: "Qual é o impacto de um plano de remuneração mal estruturado? (Tipos de Remuneração)", correct: "A", options: ["Comportamentos desalinhados", "Alta performance", "Melhoria geral", "Redução de vendas"] },
+            { text: "Como ajustar um planejamento estratégico durante períodos de incerteza? (Planejamento Estratégico)", correct: "A", options: ["Revisar metas regularmente e priorizar flexibilidade", "Reduzir o número de métricas", "Centralizar decisões em um líder", "Manter metas fixas"] },
+            { text: "Qual é o maior benefício de um onboarding estruturado? (Onboarding)", correct: "A", options: ["Reduz o tempo até a produtividade total", "Aumenta a rotatividade", "Diminui supervisão inicial", "Elimina necessidade de feedback"] },
+            { text: "Qual característica é essencial para um líder com alta Influência (I)? (DISC para Líderes)", correct: "A", options: ["Habilidade de inspirar e motivar a equipe", "Foco em tarefas administrativas", "Evitar interações sociais", "Exclusividade na análise técnica"] },
+            { text: "Qual métrica do pipeline indica necessidade de ajuste? (Pipeline de Vendas)", correct: "A", options: ["Baixa taxa de conversão em uma etapa específica", "Volume alto de leads", "Redução no número de reuniões", "Satisfação do cliente no pós-venda"] },
+            { text: "Qual é o principal objetivo de um estilo apoiador em liderança? (Liderança Situacional)", correct: "A", options: ["Fornecer suporte emocional e encorajamento", "Delegar completamente tarefas", "Supervisão rigorosa", "Foco exclusivo em métricas"] },
+            { text: "Como um treinamento de vendas deve ser ajustado para novos vendedores? (Treinamento de Vendas)", correct: "A", options: ["Mais práticas e feedback contínuo", "Exclusividade em teoria", "Redução de sessões", "Priorização de resultados financeiros imediatos"] },
+            { text: "Qual prática melhora a colaboração em uma cultura de vendas? (Cultura de Vendas)", correct: "A", options: ["Promover transparência em metas e resultados", "Reduzir reuniões", "Centralizar decisões nos líderes", "Automatizar processos de feedback"] },
+            { text: "Qual é um indicador útil no planejamento estratégico? (Planejamento Estratégico)", correct: "A", options: ["Taxa de execução de metas trimestrais", "Número total de reuniões", "Tempo de resposta ao cliente", "Volume de leads gerados"] },
+            { text: "Como um plano de remuneração pode aumentar a retenção de vendedores? (Tipos de Remuneração)", correct: "A", options: ["Bônus baseados em performance alinhados à empresa", "Comissões fixas somente", "Redução de benefícios variáveis", "Eliminação de incentivos financeiros"] },
+            { text: "Qual prática aumenta o engajamento durante o onboarding? (Onboarding)", correct: "A", options: ["Cronograma claro nos primeiros 30 dias", "Delegação de tarefas complexas", "Redução de feedback inicial", "Exclusão de treinamentos culturais"] },
+            { text: "Qual etapa do pipeline de vendas exige maior análise de dados? (Pipeline de Vendas)", correct: "A", options: ["Qualificação de leads", "Fechamento de propostas", "Geração de leads", "Pós-venda"] },
+            { text: "Qual é o maior risco ao não qualificar leads no pipeline? (Pipeline de Vendas)", correct: "A", options: ["Perda de tempo com oportunidades de baixa qualidade", "Aumento do volume de vendas", "Redução do ciclo de vendas", "Melhoria na retenção"] },
+            { text: "Como um líder com alta Conformidade (C) pode balancear precisão e inovação? (DISC para Líderes)", correct: "A", options: ["Estimulando experimentação com limites claros", "Evitar mudanças para preservar processos", "Focar exclusivamente em resultados detalhados", "Reduzir supervisão da equipe"] },
+            { text: "Qual é o impacto de um onboarding mal estruturado? (Onboarding)", correct: "A", options: ["Maior rotatividade e baixa produtividade inicial", "Aceleração de treinamentos técnicos", "Redução no tempo de integração", "Melhoria na comunicação"] },
+            { text: "Qual é o principal desafio ao implementar um treinamento de vendas? (Treinamento de Vendas)", correct: "A", options: ["Garantir aplicação prática dos conhecimentos", "Reduzir número de sessões", "Focar em resultados financeiros", "Evitar uso de métricas"] },
+            { text: "Como um líder com alta Dominância (D) pode gerenciar conflitos? (DISC para Líderes)", correct: "A", options: ["Priorizar empatia e soluções colaborativas", "Centralizar decisões em si mesmo", "Evitar discussões diretas", "Reduzir comunicação com equipe"] },
+            { text: "Qual prática melhora o alinhamento em uma cultura de vendas? (Cultura de Vendas)", correct: "A", options: ["Definir metas que reflitam valores organizacionais", "Priorizar volume de vendas", "Automatizar criação de objetivos", "Reduzir diversidade de metas"] },
+            { text: "Como ajustar um treinamento técnico para vendedores experientes? (Treinamento de Vendas)", correct: "A", options: ["Foco em técnicas avançadas e personalização", "Reduzir carga de prática", "Eliminar feedback contínuo", "Simplificar processos de aprendizado"] },
+            { text: "Qual é o benefício de um plano estratégico claro? (Planejamento Estratégico)", correct: "A", options: ["Alinhamento entre metas organizacionais e individuais", "Reduzir flexibilidade no plano", "Foco exclusivo em KPIs financeiros", "Evitar revisão de metas"] },
+            { text: "Qual é o principal objetivo de um estilo delegador? (Liderança Situacional)", correct: "A", options: ["Promover autonomia e responsabilidade", "Supervisão rigorosa", "Foco em suporte emocional", "Priorizar métricas de curto prazo"] },
+            { text: "Qual é o primeiro passo para criar uma cultura de vendas forte? (Cultura de Vendas)", correct: "A", options: ["Definir valores e propósitos claros", "Automatizar processos", "Criar metas individuais", "Contratar vendedores experientes"] },
+            { text: "Qual métrica indica sucesso em um pipeline de vendas? (Pipeline de Vendas)", correct: "A", options: ["Alta taxa de conversão por etapa", "Volume de leads gerados", "Número de reuniões realizadas", "Tempo de resposta médio"] },
+            { text: "Qual é o benefício de usar aceleradores em remuneração? (Tipos de Remuneração)", correct: "A", options: ["Motivar desempenho acima das metas", "Reduzir custos operacionais", "Simplificar cálculo de comissões", "Garantir estabilidade financeira"] },
+            { text: "Como avaliar o desempenho inicial de novos vendedores durante o onboarding? (Onboarding)", correct: "A", options: ["Monitorando atividades e ajustando metas conforme necessário", "Baseando-se exclusivamente no volume de vendas", "Focando em métricas de longo prazo", "Evitando avaliações para reduzir pressão"] },
+            { text: "Qual característica de um pipeline bem gerenciado aumenta a eficácia? (Pipeline de Vendas)", correct: "A", options: ["Previsibilidade de receitas", "Redução de leads gerados", "Aumento de reuniões", "Centralização de decisões no gestor"] },
+            { text: "Qual estilo de liderança é indicado para liderados com alta competência, mas comprometimento inconsistente? (Liderança Situacional)", correct: "A", options: ["Apoiador", "Diretivo", "Delegador", "Orientador"] },
+            { text: "Como um treinamento de vendas técnico deve ser ajustado para iniciantes? (Treinamento de Vendas)", correct: "A", options: ["Incorporar práticas e feedback contínuo", "Foco exclusivo em teoria", "Reduzir o número de sessões", "Priorização de resultados financeiros imediatos"] },
+            { text: "Qual métrica é crítica para validar um plano estratégico? (Planejamento Estratégico)", correct: "A", options: ["ROI (Retorno sobre o Investimento)", "Volume de leads gerados", "Número de reuniões realizadas", "Satisfação dos colaboradores"] },
+            { text: "Qual é o impacto de um plano de remuneração mal estruturado? (Tipos de Remuneração)", correct: "A", options: ["Comportamentos desalinhados com os objetivos da empresa", "Alta performance imediata", "Motivação geral da equipe", "Redução do volume de vendas"] },
+            { text: "Como um líder com alta Estabilidade (S) pode lidar melhor com mudanças? (DISC para Líderes)", correct: "A", options: ["Focando na comunicação e adaptabilidade", "Evitar interações com a equipe", "Reduzir expectativas", "Concentrar-se exclusivamente na execução técnica"] },
+            { text: "Qual prática aumenta a retenção de vendedores durante o onboarding? (Onboarding)", correct: "A", options: ["Apresentar a cultura organizacional desde o início", "Fornecer feedback trimestral", "Delegar todas as tarefas imediatamente", "Evitar interações diretas com gestores"] },
+            { text: "Qual estilo de liderança é mais indicado para liderados altamente competentes e motivados? (Liderança Situacional)", correct: "A", options: ["Delegador", "Diretivo", "Apoiador", "Orientador"] },
+            { text: "Qual métrica pode ajudar a identificar problemas no funil de vendas? (Pipeline de Vendas)", correct: "A", options: ["Taxa de conversão em cada etapa", "Volume de leads gerados", "Tempo médio de resposta", "Satisfação do cliente"] },
+            { text: "Qual prática promove alinhamento em uma cultura de vendas forte? (Cultura de Vendas)", correct: "A", options: ["Transparência nas metas e resultados", "Reduzir reuniões de equipe", "Automatizar feedbacks", "Priorizar decisões centralizadas"] },
+            { text: "Como identificar gaps no pipeline de vendas? (Pipeline de Vendas)", correct: "A", options: ["Analisar a taxa de conversão por etapa", "Reduzir a quantidade de leads gerados", "Aumentar o número de reuniões", "Centralizar decisões nos gestores"] },
+            { text: "Qual característica é essencial para líderes com alta Influência (I)? (DISC para Líderes)", correct: "A", options: ["Inspiração e motivação da equipe", "Foco exclusivo em tarefas administrativas", "Evitar interações sociais", "Reduzir a supervisão"] },
+            { text: "Como alinhar estratégias organizacionais com planos individuais? (Planejamento Estratégico)", correct: "A", options: ["Garantindo que metas individuais reflitam os objetivos da empresa", "Priorizar exclusivamente métricas financeiras", "Delegar planejamento aos colaboradores", "Reduzir o número de metas definidas"] },
+            { text: "Qual prática ajuda a criar uma cultura de vendas colaborativa? (Cultura de Vendas)", correct: "A", options: ["Recompensas que reforcem valores organizacionais", "Foco exclusivamente em volume de vendas", "Automatização do processo de reconhecimento", "Reduzir a diversidade de incentivos"] },
+            { text: "Qual é o impacto de um onboarding eficiente? (Onboarding)", correct: "A", options: ["Redução do tempo para produtividade total", "Eliminação de treinamento técnico", "Redução de supervisão inicial", "Exclusão de feedbacks"] },
+            { text: "Qual é o principal objetivo de um estilo diretivo em liderança? (Liderança Situacional)", correct: "A", options: ["Fornecer supervisão rigorosa e instruções claras", "Permitir autonomia total dos liderados", "Focar exclusivamente em métricas", "Dar suporte emocional"] },
+            { text: "Como um líder com alta Dominância (D) deve priorizar o crescimento da equipe? (DISC para Líderes)", correct: "A", options: ["Equilibrando assertividade com escuta ativa", "Centralizando decisões", "Focando apenas em métricas quantitativas", "Reduzindo a interação com a equipe"] },
+            { text: "Como ajustar um plano de remuneração para vendedores experientes? (Tipos de Remuneração)", correct: "A", options: ["Incluir aceleradores para metas excedidas", "Focar exclusivamente em comissões fixas", "Reduzir incentivos", "Priorizar resultados financeiros imediatos"] },
+            { text: "Qual prática melhora o desempenho em treinamentos de vendas? (Treinamento de Vendas)", correct: "A", options: ["Incorporar feedback contínuo e personalizado", "Evitar a prática para acelerar aprendizado", "Reduzir o número de sessões", "Eliminação de discussões abertas"] },
+            { text: "Qual métrica é importante no planejamento estratégico? (Planejamento Estratégico)", correct: "A", options: ["Taxa de execução de metas trimestrais", "Número de reuniões realizadas", "Tempo médio de resposta ao cliente", "Volume de leads"] },
+            { text: "Qual prática aumenta a retenção de talentos? (Planejamento Estratégico)", correct: "A", options: ["Alinhar objetivos individuais com metas organizacionais", "Foco exclusivamente em métricas financeiras", "Evitar revisões regulares de metas", "Centralizar decisões em um gestor"] },
+            { text: "Qual estilo de liderança é mais adequado para liderados com alta motivação, mas pouca experiência? (Liderança Situacional)", correct: "A", options: ["Orientador", "Diretivo", "Apoiador", "Delegador"] },
+            { text: "Como um onboarding estruturado impacta a produtividade? (Onboarding)", correct: "A", options: ["Reduz o tempo para atingir pleno potencial", "Elimina a necessidade de treinamento técnico", "Aumenta o turnover de vendedores", "Reduz o impacto de feedbacks negativos"] },
+            { text: "Qual métrica pode indicar problemas no pipeline de vendas? (Pipeline de Vendas)", correct: "A", options: ["Taxa de conversão por etapa", "Número de reuniões", "Tempo médio de resposta", "Volume total de leads"] },
+            { text: "Como um líder com alta Conformidade (C) pode melhorar processos sem prejudicar a inovação? (DISC para Líderes)", correct: "A", options: ["Equilibrar precisão com experimentação controlada", "Evitar mudanças para preservar estabilidade", "Concentrar-se exclusivamente em detalhes técnicos", "Reduzir supervisão de tarefas"] },
+            { text: "Qual prática é essencial para garantir o sucesso de um treinamento de vendas? (Treinamento de Vendas)", correct: "A", options: ["Customização com base no perfil da equipe", "Foco exclusivamente em teoria", "Evitar feedbacks para reduzir pressão", "Diminuir o número de sessões práticas"] },
+            { text: "Como ajustar um pipeline de vendas para melhorar conversões? (Pipeline de Vendas)", correct: "A", options: ["Focar em leads qualificados e ajustar etapas críticas", "Aumentar o volume total de leads", "Reduzir o número de etapas", "Priorizar métricas de longo prazo"] },
+            { text: "Qual é o maior benefício de um onboarding bem planejado? (Onboarding)", correct: "A", options: ["Reduzir a curva de aprendizado e aumentar a produtividade inicial", "Aumentar a supervisão inicial", "Reduzir o impacto de feedbacks", "Focar apenas em treinamentos técnicos"] },
+            { text: "Como uma cultura de vendas forte impacta resultados organizacionais? (Cultura de Vendas)", correct: "A", options: ["Aumenta o engajamento e a retenção da equipe", "Reduz a diversidade de ideias", "Centraliza decisões nos gestores", "Elimina processos de feedback"] },
+            { text: "Qual é o principal objetivo de um estilo orientador em liderança? (Liderança Situacional)", correct: "A", options: ["Construir confiança e motivação", "Focar exclusivamente em supervisão", "Delegar totalmente as tarefas", "Evitar interações com liderados"] },
+            { text: "Qual métrica pode indicar sucesso em um plano estratégico? (Planejamento Estratégico)", correct: "A", options: ["Crescimento de participação no mercado", "Número total de reuniões realizadas", "Volume total de leads gerados", "Satisfação geral dos colaboradores"] },
+            { text: "Como um líder com alta Dominância (D) pode gerenciar conflitos na equipe? (DISC para Líderes)", correct: "A", options: ["Priorizar empatia e buscar soluções colaborativas", "Evitar discussões para minimizar atritos", "Centralizar decisões sem consultar os envolvidos", "Focar exclusivamente em métricas de desempenho"] },
+            { text: "Como um treinamento de vendas avançado pode beneficiar a equipe? (Treinamento de Vendas)", correct: "A", options: ["Aprimorando habilidades específicas como negociação complexa", "Reduzindo o tempo de prática", "Focando exclusivamente em resultados financeiros", "Eliminando feedback contínuo"] },
+            { text: "Qual prática aumenta a eficácia de um plano estratégico? (Planejamento Estratégico)", correct: "A", options: ["Revisar metas periodicamente com base em resultados", "Focar exclusivamente em KPIs financeiros", "Centralizar decisões em uma única pessoa", "Simplificar processos para evitar complexidade"] },
+            { text: "Qual é o benefício de um pipeline de vendas bem gerenciado? (Pipeline de Vendas)", correct: "A", options: ["Melhora a previsibilidade de receitas", "Aumenta o volume de leads não qualificados", "Reduz o número de etapas no funil", "Foca exclusivamente em métricas de curto prazo"] },
+            { text: "Qual é o impacto de uma cultura de vendas mal alinhada? (Cultura de Vendas)", correct: "A", options: ["Alta rotatividade e falta de engajamento da equipe", "Aumento do volume de vendas", "Melhoria nas métricas de satisfação interna", "Redução de conflitos internos"] },
+            { text: "Como um líder com alta Estabilidade (S) pode melhorar sua adaptabilidade? (DISC para Líderes)", correct: "A", options: ["Focando em comunicação aberta e treinamento contínuo", "Evitar mudanças para preservar a harmonia", "Concentrar-se exclusivamente em resultados de curto prazo", "Reduzir interações com a equipe"] },
+            { text: "Qual estilo de liderança é indicado para liderados altamente motivados, mas com baixa experiência? (Liderança Situacional)", correct: "A", options: ["Orientador", "Delegador", "Apoiador", "Diretivo"] },
+            { text: "Qual é o objetivo principal de um onboarding eficiente? (Onboarding)", correct: "A", options: ["Integrar novos colaboradores e reduzir a curva de aprendizado", "Delegar imediatamente tarefas complexas", "Focar exclusivamente em resultados financeiros", "Reduzir o impacto de feedbacks"] },
+            { text: "Como identificar gaps no pipeline de vendas? (Pipeline de Vendas)", correct: "A", options: ["Analisando a taxa de conversão em cada etapa", "Aumentando o número de leads", "Reduzindo o número de etapas", "Focando exclusivamente em métricas de longo prazo"] },
+            { text: "Qual métrica é essencial para avaliar o sucesso de um treinamento de vendas? (Treinamento de Vendas)", correct: "A", options: ["Aumento da taxa de conversão após o treinamento", "Redução de leads no funil", "Aumento de reuniões realizadas", "Redução de supervisão inicial"] },
+            { text: "Qual prática é essencial para alinhar estratégias de vendas com objetivos organizacionais? (Planejamento Estratégico)", correct: "A", options: ["Definir metas que reflitam os valores organizacionais", "Automatizar processos de definição de objetivos", "Focar exclusivamente em métricas financeiras", "Reduzir a diversidade de metas"] },
+            { text: "Qual é o principal benefício de um plano de remuneração variável bem estruturado? (Tipos de Remuneração)", correct: "A", options: ["Incentivar desempenho acima das metas estabelecidas", "Garantir estabilidade financeira", "Reduzir custos administrativos", "Eliminação de métricas complexas"] },
+            { text: "Como um líder com alta Influência (I) pode melhorar sua tomada de decisões? (DISC para Líderes)", correct: "A", options: ["Equilibrando intuição e análise de dados", "Centralizando todas as decisões", "Focando exclusivamente em inspiração da equipe", "Reduzindo interações com a equipe"] },
+            { text: "Qual é o impacto de um treinamento de vendas baseado em dados? (Treinamento de Vendas)", correct: "A", options: ["Personalizar estratégias com base em métricas específicas", "Reduzir a flexibilidade no aprendizado", "Simplificar processos para resultados rápidos", "Priorizar teorias complexas"] }
+        ];
+
+        const totalQuestions = questions.length;
+        let currentQuestion = 0;
+        const userAnswers = [];
+
+        function renderQuestion(index) {
+            const questionContainer = document.getElementById("quiz-container");
+            const question = questions[index];
+            const questionNumber = index + 1;
+
+            questionContainer.innerHTML = `
+                <p><strong>Pergunta ${questionNumber} de ${totalQuestions}</strong></p>
+                <p>${question.text}</p>
+                ${question.options
+                    .map(
+                        (option, i) =>
+                            `<label><input type="radio" name="question" value="${String.fromCharCode(65 + i)}" required> ${option}</label><br>`
+                    )
+                    .join("")}
+            `;
+
+            const backButton = document.getElementById("back-button");
+            const quitButton = document.getElementById("quit-button");
+            const nextButton = document.getElementById("next-button");
+            const finishButton = document.getElementById("finish-button");
+
+            backButton.classList.add("hidden");
+            quitButton.classList.add("hidden");
+            nextButton.classList.add("hidden");
+            finishButton.classList.add("hidden");
+
+            if (index === 0) {
+                backButton.classList.remove("hidden");
+                nextButton.classList.remove("hidden");
+            } else if (index === totalQuestions - 1) {
+                quitButton.classList.remove("hidden");
+                finishButton.classList.remove("hidden");
+            } else {
+                quitButton.classList.remove("hidden");
+                nextButton.classList.remove("hidden");
+            }
+        }
+
+        function nextQuestion() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+            if (!selectedAnswer) {
+                alert("Por favor, selecione uma resposta antes de prosseguir.");
+                return;
+            }
+            userAnswers[currentQuestion] = selectedAnswer.value;
+            currentQuestion++;
+            renderQuestion(currentQuestion);
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion(currentQuestion);
+            }
+        }
+
+        function quitQuiz() {
+            if (confirm("Tem certeza? Todo progresso será perdido!")) {
+                location.reload();
+            }
+        }
+
+        function calculateScore() {
+            const correctAnswers = questions.map(q => q.correct);
+            let score = 0;
+            correctAnswers.forEach((answer, index) => {
+                if (answer === userAnswers[index]) {
+                    score++;
+                }
+            });
+            const percentage = (score / totalQuestions) * 100;
+            document.getElementById("result").innerHTML = `Você acertou ${score} de ${totalQuestions} questões. (${percentage.toFixed(2)}%)`;
+        }
+
+        renderQuestion(currentQuestion);
+    </script>
+</body>
+</html>

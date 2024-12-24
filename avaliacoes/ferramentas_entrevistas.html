@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação - Ferramentas para Entrevistar Vendedores</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .question, .user-info {
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Avaliação - Ferramentas para Entrevistar Vendedores</h1>
+    <form id="quiz-form">
+        <!-- Colher nome do usuário -->
+        <div class="user-info">
+            <label for="userName"><strong>Nome do Usuário:</strong></label><br>
+            <input type="text" id="userName" name="userName" placeholder="Digite seu nome" required>
+        </div>
+
+        <!-- Questões -->
+        <div class="question">
+            <p><strong>1.</strong> Qual é o principal benefício de usar ferramentas em entrevistas de vendas? (Fácil)</p>
+            <input type="radio" name="q1" value="A" required> Reduzir o tempo da entrevista.<br>
+            <input type="radio" name="q1" value="B"> Padronizar o processo e obter dados consistentes.<br>
+            <input type="radio" name="q1" value="C"> Avaliar exclusivamente os resultados financeiros.<br>
+            <input type="radio" name="q1" value="D"> Centralizar decisões na liderança.
+        </div>
+
+        <div class="question">
+            <p><strong>2.</strong> Qual ferramenta pode ajudar a avaliar competências comportamentais? (Fácil)</p>
+            <input type="radio" name="q2" value="A" required> CRM de vendas.<br>
+            <input type="radio" name="q2" value="B"> Testes de perfil, como DISC ou MBTI.<br>
+            <input type="radio" name="q2" value="C"> Relatórios financeiros.<br>
+            <input type="radio" name="q2" value="D"> Planilhas de metas.
+        </div>
+
+        <div class="question">
+            <p><strong>3.</strong> Como as ferramentas digitais impactam o processo de entrevista? (Média)</p>
+            <input type="radio" name="q3" value="A" required> Automatizando tarefas repetitivas e organizando informações.<br>
+            <input type="radio" name="q3" value="B"> Substituindo o papel do entrevistador.<br>
+            <input type="radio" name="q3" value="C"> Eliminando a necessidade de interação com o candidato.<br>
+            <input type="radio" name="q3" value="D"> Aumentando a complexidade do processo.
+        </div>
+
+        <div class="question">
+            <p><strong>4.</strong> Qual é o impacto de um roteiro estruturado de perguntas? (Média)</p>
+            <input type="radio" name="q4" value="A" required> Garante consistência na avaliação de todos os candidatos.<br>
+            <input type="radio" name="q4" value="B"> Reduz a flexibilidade da entrevista.<br>
+            <input type="radio" name="q4" value="C"> Centraliza as decisões no gestor.<br>
+            <input type="radio" name="q4" value="D"> Foca apenas nas metas de vendas.
+        </div>
+
+        <div class="question">
+            <p><strong>5.</strong> Qual é um erro comum ao usar ferramentas em entrevistas? (Difícil)</p>
+            <input type="radio" name="q5" value="A" required> Confiar exclusivamente nos resultados das ferramentas.<br>
+            <input type="radio" name="q5" value="B"> Integrar os dados com o processo de decisão.<br>
+            <input type="radio" name="q5" value="C"> Usar métricas objetivas de avaliação.<br>
+            <input type="radio" name="q5" value="D"> Adaptar as ferramentas ao contexto da empresa.
+        </div>
+
+        <div class="question">
+            <p><strong>6.</strong> Como as ferramentas podem melhorar a experiência do candidato? (Difícil)</p>
+            <input type="radio" name="q6" value="A" required> Oferecendo transparência e feedback estruturado.<br>
+            <input type="radio" name="q6" value="B"> Reduzindo a necessidade de avaliações comportamentais.<br>
+            <input type="radio" name="q6" value="C"> Ignorando respostas subjetivas.<br>
+            <input type="radio" name="q6" value="D"> Centralizando todas as decisões no recrutador.
+        </div>
+
+        <div class="question">
+            <p><strong>7.</strong> Qual é o impacto de ferramentas bem utilizadas em entrevistas? (Superdifícil)</p>
+            <input type="radio" name="q7" value="A" required> Aumenta a assertividade das contratações e reduz custos.<br>
+            <input type="radio" name="q7" value="B"> Limita o processo de seleção a critérios genéricos.<br>
+            <input type="radio" name="q7" value="C"> Substitui o papel do entrevistador.<br>
+            <input type="radio" name="q7" value="D"> Aumenta a subjetividade na tomada de decisão.
+        </div>
+
+        <button type="button" class="btn" onclick="calculateScore()">Enviar Respostas</button>
+        <button type="button" class="btn" onclick="responderNovamente()">Responder Novamente</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        function calculateScore() {
+            const answers = {
+                q1: 'B',
+                q2: 'B',
+                q3: 'A',
+                q4: 'A',
+                q5: 'A',
+                q6: 'A',
+                q7: 'A'
+            };
+
+            let score = 0;
+            let total = Object.keys(answers).length;
+
+            Object.keys(answers).forEach(q => {
+                const userAnswer = document.querySelector(`input[name="${q}"]:checked`);
+                if (userAnswer && userAnswer.value === answers[q]) {
+                    score++;
+                }
+            });
+
+            const userName = document.getElementById('userName').value;
+            const date = new Date().toLocaleString();
+            document.getElementById('result').innerText = `${userName}, você acertou ${score} de ${total} questões.`;
+
+            saveResult(userName, date, score, total);
+        }
+
+        function saveResult(userName, date, score, total) {
+            const resultData = JSON.parse(localStorage.getItem('results_ferramentas_entrevistas')) || [];
+            resultData.push({ userName, date, score, total });
+            localStorage.setItem('results_ferramentas_entrevistas', JSON.stringify(resultData));
+            alert('Resultado salvo com sucesso!');
+        }
+
+        function responderNovamente() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
