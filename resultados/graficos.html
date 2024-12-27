@@ -36,15 +36,17 @@
             margin: 10px 0;
         }
 .task a {
-    display: block; /* Garante que o botão ocupe o espaço necessário */
+    display: inline-block; /* Garante que o botão ocupe apenas o espaço necessário */
     text-align: center; /* Centraliza o texto dentro do botão */
-    margin: 10px auto; /* Centraliza o botão horizontalmente */
+    margin: 10px auto; /* Adiciona uma margem uniforme */
+    padding: 8px 16px; /* Ajusta o espaço interno do botão */
+    font-size: 14px; /* Define um tamanho de texto proporcional */
     background-color: #000;
     color: white;
     text-decoration: none;
-    padding: 10px 20px;
     border-radius: 5px;
-    text-align: center;
+    min-width: 120px; /* Garante que todos os botões tenham pelo menos o mesmo tamanho */
+    max-width: 150px; /* Define um limite de largura para evitar botões grandes demais */
 }
         .task a:hover {
             background-color: #333;
