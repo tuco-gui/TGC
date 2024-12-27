@@ -48,13 +48,7 @@
 </head>
 <body>
     <h1>Resultados do Treinamento</h1>
-    <div class="input-container">
-        <label for="user-name">Digite seu nome:</label>
-        <input type="text" id="user-name" placeholder="Seu Nome" />
-        <button onclick="saveResults()">Salvar Resultados</button>
-    </div>
-
-    <div class="candidate-container" style="display: none;">
+    <div class="candidate-container">
         <label for="candidate-select">Selecione um candidato:</label>
         <select id="candidate-select" onchange="displayResults()">
             <option value="">Escolha...</option>
@@ -83,23 +77,6 @@
         let barChartInstance = null;
         let pieChartInstance = null;
 
-        function saveResults() {
-            const userName = document.getElementById("user-name").value.trim();
-            if (!userName) {
-                alert("Por favor, insira seu nome.");
-                return;
-            }
-
-            const currentDate = new Date().toISOString().split("T")[0];
-            const storedResults = JSON.parse(localStorage.getItem("trainingResults")) || [];
-
-            storedResults.push({ name: userName, date: currentDate, results });
-            localStorage.setItem("trainingResults", JSON.stringify(storedResults));
-
-            alert("Resultados salvos com sucesso!");
-            loadCandidates();
-        }
-
         function loadCandidates() {
             const storedResults = JSON.parse(localStorage.getItem("trainingResults")) || [];
             const candidateSelect = document.getElementById("candidate-select");
@@ -110,7 +87,20 @@
                 option.textContent = `${candidate.name} - ${candidate.date}`;
                 candidateSelect.appendChild(option);
             });
-            document.querySelector(".candidate-container").style.display = storedResults.length ? "block" : "none";
+        }
+
+        function saveResults(name) {
+            const currentDate = new Date().toISOString().split("T")[0];
+            const storedResults = JSON.parse(localStorage.getItem("trainingResults")) || [];
+
+            // Verificar se o candidato já existe
+            const existingCandidate = storedResults.find(candidate => candidate.name === name);
+            if (!existingCandidate) {
+                storedResults.push({ name, date: currentDate, results });
+                localStorage.setItem("trainingResults", JSON.stringify(storedResults));
+            }
+
+            loadCandidates();
         }
 
         function displayResults() {
@@ -194,6 +184,8 @@
             });
         }
 
+        // Para salvar resultados automaticamente no teste
+        saveResults("Candidato Padrão");
         loadCandidates();
     </script>
 </body>
