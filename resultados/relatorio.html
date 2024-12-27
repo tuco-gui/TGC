@@ -15,7 +15,224 @@
             color: #000;
         }
         .input-container, .result-container, .candidate-container {
+            margin: 20px;<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados do Treinamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
             margin: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #000;
+        }
+        .input-container, .result-container, .candidate-container {
+            margin: 20px;
+        }
+        .result-item {
+            margin: 10px 0;
+        }
+        .chart-container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        .summary {
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #333;
+        }
+        select {
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Resultados do Treinamento</h1>
+    <div class="input-container">
+        <label for="user-name">Digite seu nome:</label>
+        <input type="text" id="user-name" placeholder="Seu Nome" />
+        <button onclick="saveResults()">Salvar Resultados</button>
+    </div>
+
+    <div class="candidate-container" style="display: none;">
+        <label for="candidate-select">Selecione um candidato:</label>
+        <select id="candidate-select" onchange="displayResults()">
+            <option value="">Escolha...</option>
+        </select>
+    </div>
+
+    <div id="results" class="result-container" style="display: none;">
+        <h2>Desempenho de <span id="display-name"></span></h2>
+        <p><strong>Data:</strong> <span id="display-date"></span></p>
+        <ul id="result-list"></ul>
+        <p class="summary"><strong>Média Geral:</strong> <span id="average-score"></span></p>
+        <div class="chart-container" id="charts" style="display: none;">
+            <canvas id="barChart"></canvas>
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const results = [
+            { theme: "Estilos de Liderança", score: 8 },
+            { theme: "Liderança Situacional", score: 9 },
+            { theme: "DISC para Líderes", score: 7 },
+            { theme: "Gestão de Combinados", score: 6 },
+        ];
+
+        function saveResults() {
+            const userName = document.getElementById("user-name").value.trim();
+            if (!userName) {
+                alert("Por favor, insira seu nome.");
+                return;
+            }
+
+            const currentDate = new Date().toISOString().split("T")[0];
+            const storedResults = JSON.parse(localStorage.getItem("trainingResults")) || [];
+
+            storedResults.push({ name: userName, date: currentDate, results });
+            localStorage.setItem("trainingResults", JSON.stringify(storedResults));
+
+            alert("Resultados salvos com sucesso!");
+            loadCandidates();
+        }
+
+        function loadCandidates() {
+            const storedResults = JSON.parse(localStorage.getItem("trainingResults")) || [];
+            const candidateSelect = document.getElementById("candidate-select");
+            candidateSelect.innerHTML = '<option value="">Escolha...</option>';
+            storedResults.forEach((candidate, index) => {
+                const option = document.createElement("option");
+                option.value = index;
+                option.textContent = `${candidate.name} - ${candidate.date}`;
+                candidateSelect.appendChild(option);
+            });
+            document.querySelector(".candidate-container").style.display = storedResults.length ? "block" : "none";
+        }
+
+        function displayResults() {
+            const selectedIndex = document.getElementById("candidate-select").value;
+            if (!selectedIndex) return;
+
+            const storedResults = JSON.parse(localStorage.getItem("trainingResults")) || [];
+            const candidate = storedResults[selectedIndex];
+
+            document.getElementById("display-name").textContent = candidate.name;
+            document.getElementById("display-date").textContent = candidate.date;
+
+            const resultList = document.getElementById("result-list");
+            resultList.innerHTML = "";
+            let totalScore = 0;
+
+            candidate.results.forEach(result => {
+                const li = document.createElement("li");
+                li.classList.add("result-item");
+                li.textContent = `${result.theme}: Nota ${result.score}`;
+                resultList.appendChild(li);
+                totalScore += result.score;
+            });
+
+            const averageScore = (totalScore / candidate.results.length).toFixed(2);
+            document.getElementById("average-score").textContent = averageScore;
+
+            generateCharts(
+                candidate.results.map(r => r.theme),
+                candidate.results.map(r => r.score)
+            );
+
+            document.getElementById("results").style.display = "block";
+        }
+
+        let barChartInstance = null;
+let pieChartInstance = null;
+
+function generateCharts(labels, data) {
+    // Remover gráficos existentes, se houver
+    if (barChartInstance) {
+        barChartInstance.destroy();
+    }
+    if (pieChartInstance) {
+        pieChartInstance.destroy();
+    }
+
+    // Gráfico de Barras
+    const ctxBar = document.getElementById("barChart").getContext("2d");
+    barChartInstance = new Chart(ctxBar, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Notas por Tema",
+                data: data,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                borderColor: "rgba(0, 0, 0, 1)",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, max: 10 }
+            }
+        }
+    });
+
+    // Gráfico de Pizza
+    const ctxPie = document.getElementById("pieChart").getContext("2d");
+    pieChartInstance = new Chart(ctxPie, {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+}
+
+
+            const ctxPie = document.getElementById("pieChart").getContext("2d");
+            new Chart(ctxPie, {
+                type: "pie",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        loadCandidates();
+    </script>
+</body>
+</html>
+
         }
         .result-item {
             margin: 10px 0;
