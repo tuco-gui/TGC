@@ -9,36 +9,40 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            text-align: center;
         }
         h1 {
+            text-align: center;
             color: #000;
         }
-        .container {
-            max-width: 800px;
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1200px;
             margin: 0 auto;
-            text-align: left;
         }
         .task {
-            margin: 20px 0;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #f9f9f9;
+            text-align: left;
         }
         .task h2 {
             margin-top: 0;
+            font-size: 1.2em;
         }
         .task p {
             margin: 10px 0;
         }
         .task a {
+            display: inline-block;
             background-color: #000;
             color: white;
             text-decoration: none;
             padding: 10px 20px;
             border-radius: 5px;
-            display: inline-block;
+            text-align: center;
         }
         .task a:hover {
             background-color: #333;
@@ -47,7 +51,7 @@
 </head>
 <body>
     <h1>Mão na Massa - Atividades Práticas</h1>
-    <div class="container">
+    <div class="grid-container">
         <div class="task">
             <h2>1. Aplicação do DISC</h2>
             <p>Crie um relatório detalhado analisando perfis comportamentais DISC de sua equipe. Identifique pontos fortes e áreas de melhoria para cada perfil.</p>
@@ -87,6 +91,11 @@
             <h2>8. Planejamento Estratégico</h2>
             <p>Monte um planejamento estratégico completo para sua empresa ou uma fictícia. Inclua objetivos, metas e métricas de sucesso.</p>
             <a href="https://drive.google.com/drive/u/0/folders/1DU4ivmNm-8h7mujY9UuBAcpR3LcqA9PF" target="_blank">Enviar Planejamento</a>
+        </div>
+        <div class="task">
+            <h2>9. Job Descriptions</h2>
+            <p>Descreva os cargos de uma equipe de vendas, detalhando responsabilidades, habilidades necessárias e métricas de desempenho para cada função.</p>
+            <a href="https://drive.google.com/drive/u/0/folders/1DU4ivmNm-8h7mujY9UuBAcpR3LcqA9PF" target="_blank">Enviar Descrição</a>
         </div>
     </div>
 </body>
