@@ -80,6 +80,9 @@
             { theme: "Gestão de Combinados", score: 6 },
         ];
 
+        let barChartInstance = null;
+        let pieChartInstance = null;
+
         function saveResults() {
             const userName = document.getElementById("user-name").value.trim();
             if (!userName) {
@@ -143,60 +146,40 @@
             document.getElementById("results").style.display = "block";
         }
 
-        let barChartInstance = null;
-let pieChartInstance = null;
-
-function generateCharts(labels, data) {
-    // Remover gráficos existentes, se houver
-    if (barChartInstance) {
-        barChartInstance.destroy();
-    }
-    if (pieChartInstance) {
-        pieChartInstance.destroy();
-    }
-
-    // Gráfico de Barras
-    const ctxBar = document.getElementById("barChart").getContext("2d");
-    barChartInstance = new Chart(ctxBar, {
-        type: "bar",
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Notas por Tema",
-                data: data,
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                borderColor: "rgba(0, 0, 0, 1)",
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: { beginAtZero: true, max: 10 }
+        function generateCharts(labels, data) {
+            // Remover gráficos existentes
+            if (barChartInstance) {
+                barChartInstance.destroy();
             }
-        }
-    });
+            if (pieChartInstance) {
+                pieChartInstance.destroy();
+            }
 
-    // Gráfico de Pizza
-    const ctxPie = document.getElementById("pieChart").getContext("2d");
-    pieChartInstance = new Chart(ctxPie, {
-        type: "pie",
-        data: {
-            labels: labels,
-            datasets: [{
-                data: data,
-                backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"]
-            }]
-        },
-        options: {
-            responsive: true
-        }
-    });
-}
+            // Gráfico de Barras
+            const ctxBar = document.getElementById("barChart").getContext("2d");
+            barChartInstance = new Chart(ctxBar, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Notas por Tema",
+                        data: data,
+                        backgroundColor: "rgba(0, 0, 0, 0.7)",
+                        borderColor: "rgba(0, 0, 0, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 10 }
+                    }
+                }
+            });
 
-
+            // Gráfico de Pizza
             const ctxPie = document.getElementById("pieChart").getContext("2d");
-            new Chart(ctxPie, {
+            pieChartInstance = new Chart(ctxPie, {
                 type: "pie",
                 data: {
                     labels: labels,
