@@ -14,11 +14,8 @@
         h1 {
             color: #000;
         }
-        .input-container, .result-container, .candidate-container {
+        .candidate-container, .result-container {
             margin: 20px;
-        }
-        .result-item {
-            margin: 10px 0;
         }
         .chart-container {
             width: 80%;
@@ -60,8 +57,10 @@
         <p><strong>Data:</strong> <span id="display-date"></span></p>
         <ul id="result-list"></ul>
         <p class="summary"><strong>Média Geral:</strong> <span id="average-score"></span></p>
-        <div class="chart-container" id="charts" style="display: none;">
+        <div class="chart-container">
             <canvas id="barChart"></canvas>
+        </div>
+        <div class="chart-container">
             <canvas id="pieChart"></canvas>
         </div>
     </div>
@@ -119,7 +118,6 @@
 
             candidate.results.forEach(result => {
                 const li = document.createElement("li");
-                li.classList.add("result-item");
                 li.textContent = `${result.theme}: Nota ${result.score}`;
                 resultList.appendChild(li);
                 totalScore += result.score;
@@ -138,12 +136,8 @@
 
         function generateCharts(labels, data) {
             // Remover gráficos existentes
-            if (barChartInstance) {
-                barChartInstance.destroy();
-            }
-            if (pieChartInstance) {
-                pieChartInstance.destroy();
-            }
+            if (barChartInstance) barChartInstance.destroy();
+            if (pieChartInstance) pieChartInstance.destroy();
 
             // Gráfico de Barras
             const ctxBar = document.getElementById("barChart").getContext("2d");
@@ -184,7 +178,7 @@
             });
         }
 
-        // Para salvar resultados automaticamente no teste
+        // Simulação inicial para testes
         saveResults("Candidato Padrão");
         loadCandidates();
     </script>
