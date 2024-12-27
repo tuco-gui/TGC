@@ -14,6 +14,9 @@
         h1 {
             color: #000;
         }
+        .input-container, .result-container, .candidate-container {
+            margin: 20px;
+        }
         .result-item {
             margin: 10px 0;
         }
@@ -25,122 +28,160 @@
             font-weight: bold;
             margin: 20px 0;
         }
+        button {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #333;
+        }
+        select {
+            padding: 10px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <h1>Resultados do Treinamento</h1>
-    <div id="user-info">
-        <p><strong>Nome do Usuário:</strong> <span id="user-name">Usuário</span></p>
-        <p><strong>Data:</strong> <span id="current-date"></span></p>
+    <div class="input-container">
+        <label for="user-name">Digite seu nome:</label>
+        <input type="text" id="user-name" placeholder="Seu Nome" />
+        <button onclick="saveResults()">Salvar Resultados</button>
     </div>
-    <div id="results">
-        <h2>Desempenho por Tema</h2>
+
+    <div class="candidate-container" style="display: none;">
+        <label for="candidate-select">Selecione um candidato:</label>
+        <select id="candidate-select" onchange="displayResults()">
+            <option value="">Escolha...</option>
+        </select>
+    </div>
+
+    <div id="results" class="result-container" style="display: none;">
+        <h2>Desempenho de <span id="display-name"></span></h2>
+        <p><strong>Data:</strong> <span id="display-date"></span></p>
         <ul id="result-list"></ul>
         <p class="summary"><strong>Média Geral:</strong> <span id="average-score"></span></p>
-    </div>
-    <div class="chart-container">
-        <canvas id="barChart"></canvas>
-    </div>
-    <div class="chart-container">
-        <canvas id="pieChart"></canvas>
+        <div class="chart-container" id="charts" style="display: none;">
+            <canvas id="barChart"></canvas>
+            <canvas id="pieChart"></canvas>
+        </div>
     </div>
 
     <script>
-        // Simulando resultados das avaliações
         const results = [
             { theme: "Estilos de Liderança", score: 8 },
             { theme: "Liderança Situacional", score: 9 },
             { theme: "DISC para Líderes", score: 7 },
             { theme: "Gestão de Combinados", score: 6 },
-            { theme: "Construindo uma Cultura de Vendas", score: 10 },
-            { theme: "Quando Demitir um Vendedor", score: 5 },
-            { theme: "Tipos de Remuneração", score: 9 },
-            { theme: "Perguntas para Fazer na Entrevista", score: 8 },
-            { theme: "Ferramentas para Entrevistar Vendedores", score: 6 },
-            { theme: "Onboarding de Vendedores", score: 7 },
-            { theme: "Treinamento de Vendas", score: 8 },
-            { theme: "Coaching de Vendas", score: 7 },
-            { theme: "Construindo um Processo de Vendas", score: 9 },
-            { theme: "Gerenciando o Pipeline de Vendas", score: 8 },
-            { theme: "Liderando de Acordo com a Meta", score: 7 },
-            { theme: "Indicadores de Vendas", score: 6 },
-            { theme: "Planejamento Estratégico", score: 9 }
         ];
 
-        // Calculando a média das notas
-        const scores = results.map(result => result.score);
-        const averageScore = (scores.reduce((sum, score) => sum + score, 0) / scores.length).toFixed(2);
+        function saveResults() {
+            const userName = document.getElementById("user-name").value.trim();
+            if (!userName) {
+                alert("Por favor, insira seu nome.");
+                return;
+            }
 
-        // Inserindo dados do usuário
-        document.getElementById("user-name").innerText = "Nome Exemplo"; // Substituir pelo nome real do usuário
-        document.getElementById("current-date").innerText = new Date().toLocaleDateString();
+            const currentDate = new Date().toISOString().split("T")[0];
+            const storedResults = JSON.parse(localStorage.getItem("trainingResults")) || [];
 
-        // Exibindo resultados
-        const resultList = document.getElementById("result-list");
-        results.forEach(result => {
-            const li = document.createElement("li");
-            li.classList.add("result-item");
-            li.textContent = `${result.theme}: Nota ${result.score}`;
-            resultList.appendChild(li);
-        });
+            storedResults.push({ name: userName, date: currentDate, results });
+            localStorage.setItem("trainingResults", JSON.stringify(storedResults));
 
-        // Exibindo a média geral
-        document.getElementById("average-score").innerText = averageScore;
+            alert("Resultados salvos com sucesso!");
+            loadCandidates();
+        }
 
-        // Gráfico de Barras
-        const ctxBar = document.getElementById("barChart").getContext("2d");
-        new Chart(ctxBar, {
-            type: "bar",
-            data: {
-                labels: results.map(result => result.theme),
-                datasets: [{
-                    label: "Notas por Tema",
-                    data: scores,
-                    backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    borderColor: "rgba(0, 0, 0, 1)",
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: true }
+        function loadCandidates() {
+            const storedResults = JSON.parse(localStorage.getItem("trainingResults")) || [];
+            const candidateSelect = document.getElementById("candidate-select");
+            candidateSelect.innerHTML = '<option value="">Escolha...</option>';
+            storedResults.forEach((candidate, index) => {
+                const option = document.createElement("option");
+                option.value = index;
+                option.textContent = `${candidate.name} - ${candidate.date}`;
+                candidateSelect.appendChild(option);
+            });
+            document.querySelector(".candidate-container").style.display = storedResults.length ? "block" : "none";
+        }
+
+        function displayResults() {
+            const selectedIndex = document.getElementById("candidate-select").value;
+            if (!selectedIndex) return;
+
+            const storedResults = JSON.parse(localStorage.getItem("trainingResults")) || [];
+            const candidate = storedResults[selectedIndex];
+
+            document.getElementById("display-name").textContent = candidate.name;
+            document.getElementById("display-date").textContent = candidate.date;
+
+            const resultList = document.getElementById("result-list");
+            resultList.innerHTML = "";
+            let totalScore = 0;
+
+            candidate.results.forEach(result => {
+                const li = document.createElement("li");
+                li.classList.add("result-item");
+                li.textContent = `${result.theme}: Nota ${result.score}`;
+                resultList.appendChild(li);
+                totalScore += result.score;
+            });
+
+            const averageScore = (totalScore / candidate.results.length).toFixed(2);
+            document.getElementById("average-score").textContent = averageScore;
+
+            generateCharts(
+                candidate.results.map(r => r.theme),
+                candidate.results.map(r => r.score)
+            );
+
+            document.getElementById("results").style.display = "block";
+        }
+
+        function generateCharts(labels, data) {
+            const ctxBar = document.getElementById("barChart").getContext("2d");
+            new Chart(ctxBar, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Notas por Tema",
+                        data: data,
+                        backgroundColor: "rgba(0, 0, 0, 0.7)",
+                        borderColor: "rgba(0, 0, 0, 1)",
+                        borderWidth: 1
+                    }]
                 },
-                scales: {
-                    x: { title: { display: true, text: "Temas" } },
-                    y: {
-                        title: { display: true, text: "Nota" },
-                        beginAtZero: true,
-                        max: 10
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 10 }
                     }
                 }
-            }
-        });
+            });
 
-        // Gráfico de Pizza
-        const ctxPie = document.getElementById("pieChart").getContext("2d");
-        new Chart(ctxPie, {
-            type: "pie",
-            data: {
-                labels: results.map(result => result.theme),
-                datasets: [{
-                    data: scores,
-                    backgroundColor: [
-                        "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF",
-                        "#FF9F40", "#D4E157", "#64B5F6", "#81C784", "#FF7043",
-                        "#8E24AA", "#7986CB", "#E57373", "#4FC3F7", "#FFD54F",
-                        "#AED581", "#BA68C8"
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: "right" }
+            const ctxPie = document.getElementById("pieChart").getContext("2d");
+            new Chart(ctxPie, {
+                type: "pie",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"]
+                    }]
+                },
+                options: {
+                    responsive: true
                 }
-            }
-        });
+            });
+        }
+
+        loadCandidates();
     </script>
 </body>
 </html>
