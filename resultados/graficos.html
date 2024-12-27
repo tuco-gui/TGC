@@ -21,32 +21,41 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-        .task {
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            text-align: left;
-        }
-        .task h2 {
-            margin-top: 0;
-            font-size: 1.2em;
-        }
-        .task p {
-            margin: 10px 0;
-        }
+.task {
+    display: flex; /* Define um layout flexível */
+    flex-direction: column; /* Empilha o conteúdo verticalmente */
+    align-items: center; /* Centraliza tudo horizontalmente */
+    justify-content: space-between; /* Espaça bem os elementos */
+    height: 200px; /* Define uma altura consistente para todos os blocos */
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.task h2 {
+    text-align: center; /* Centraliza o título */
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.task p {
+    text-align: center; /* Centraliza o texto da descrição */
+    font-size: 0.95em;
+    margin: 10px 0;
+}
+
 .task a {
     display: inline-block; /* Garante que o botão ocupe apenas o espaço necessário */
-    text-align: center; /* Centraliza o texto dentro do botão */
-    margin: 10px auto; /* Adiciona uma margem uniforme */
-    padding: 8px 16px; /* Ajusta o espaço interno do botão */
-    font-size: 14px; /* Define um tamanho de texto proporcional */
+    margin-top: auto; /* Empurra o botão para o final do bloco */
+    padding: 8px 20px;
+    font-size: 14px; /* Ajusta o tamanho do texto */
     background-color: #000;
     color: white;
     text-decoration: none;
     border-radius: 5px;
-    min-width: 120px; /* Garante que todos os botões tenham pelo menos o mesmo tamanho */
-    max-width: 150px; /* Define um limite de largura para evitar botões grandes demais */
+    text-align: center;
+    min-width: 100px; /* Mantém todos os botões com largura mínima */
 }
         .task a:hover {
             background-color: #333;
